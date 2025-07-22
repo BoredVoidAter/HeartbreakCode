@@ -30,11 +30,10 @@ class Tokenizer:
             ("DEFINE_VERSE", r"Define Verse"),
             ("END_VERSE", r"End Verse"),
             ("PERFORM", r"Perform"),
-            ("STRING", r"'[^']*'|"[^"]*""),
+            ("STRING", r''''[^']*'|"[^"]*"''''),
             ("NUMBER", r"\d+"),
             ("IDENTIFIER", r"[a-zA-Z_][a-zA-Z0-9_]*"),
-            ("UNKNOWN", r"."),
-        ]
+            ("L_BRACKET", r"\["),            ("R_BRACKET", r"\]"),            ("COMMA", r","),            ("ON_REPEAT_AS_LONG_AS", r"On Repeat as long as"),            ("END_REPEAT", r"End Repeat"),            ("FOR_EVERY", r"For every"),            ("IN", r"in"),            ("END_TOUR", r"End Tour"),            ("FEATURING", r"Featuring"),            ("THE_FINAL_WORD_IS", r"The final word is"),            ("EQUALS", r"="),            ("UNKNOWN", r"."),        ]
 
     def tokenize(self):
         while self.position < len(self.source_code):

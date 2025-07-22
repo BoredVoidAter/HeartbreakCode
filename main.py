@@ -34,5 +34,36 @@ Define Verse 'MyChorus': Speak Now:
 End Verse
 
 Perform 'MyChorus'
+
+# Tracklist Example
+The story of us is eras_tour_setlist ['Lover', 'Fearless', 'evermore']
+Speak Now: eras_tour_setlist
+Speak Now: eras_tour_setlist[0]
+Speak Now: eras_tour_setlist[2]
+
+# While Loop Example
+The story of us is counter 0
+On Repeat as long as counter is less than 3: Speak Now:
+    Speak Now: counter
+    The story of us is counter counter + 1
+End Repeat
+
+# For Loop Example
+For every song in eras_tour_setlist: Speak Now:
+    Speak Now: song
+End Tour
+
+# Function with Parameters and Return Value Example
+Define Verse 'WriteASong' Featuring title, artist: Speak Now:
+    Speak Now: 'Writing a song called '
+    Speak Now: title
+    Speak Now: ' by '
+    Speak Now: artist
+    The final word is title
+End Verse
+
+The story of us is my_song_title Perform 'WriteASong' Featuring title='All Too Well', artist='Taylor Swift'
+Speak Now: 'The song I wrote is: '
+Speak Now: my_song_title
 """
     run_heartbreak_code(code)

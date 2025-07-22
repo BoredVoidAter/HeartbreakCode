@@ -49,7 +49,9 @@ This project is more than just a concept; it's a significant technical undertaki
 *   **Lyrical & Expressive Syntax:** Write code that reads like a pop song. Assign variables with `The story of us is...`.
 *   **Lyrical Conditional Logic:** Implement conditional branching using `Would've, Could've, Should've` for `if`, `else if`, and `else` blocks, with comparison operators like `is`, `is not`, `is greater than`, etc.
 *   **Reusable 'Verses' (Functions):** Define and call functions (Verses) using `Define Verse 'Chorus': ... End Verse` and `Perform 'Chorus'` for modularity and code reusability.
-*   **Emotionally Resonant Control Flow:** Don't just loop—put it on repeat. The `Encore` keyword lets you relive memories (or mistakes) until a condition is met.
+*   **Array-like Data Structures ('Tracklists')**: Store ordered collections of items using bracket syntax (e.g., `The eras_tour_setlist is ['Lover', 'Fearless', 'evermore']`) and access elements by position (e.g., `the 3rd song in eras_tour_setlist`).
+*   **Lyrical Looping Constructs ('On Repeat')**: Implement iterative control flow with `while`-like loops (`On Repeat as long as [condition]: ... End Repeat`) and `for-each` loops for 'Tracklists' (`For every song in eras_tour_setlist: ... End Tour`).
+*   **Enhanced 'Verses' with Parameters and Returns**: Upgrade functions to support parameters (`Perform 'WriteASong' Featuring title='All Too Well'`) and return values (`The final word is...`).
 *   **Built-in I/O (Theatrically):** Don't just `print`. Instead, you can `Scream it out:`, `Whisper:`, or `Write in my diary:`.
 *   **First-Class Functions (as Verses):** Encapsulate your reusable logic into a `Verse` or a `Bridge`. Call your functions with `Perform 'Verse Name'`.
 *   **Built From the Heart(break):** This isn't a simple text replacement. HeartbreakCode features a custom lexer, a robust parser with an Abstract Syntax Tree (AST), and an interpreter that brings your lyrical code to life.
