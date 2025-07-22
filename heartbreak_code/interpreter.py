@@ -2,6 +2,7 @@
 class Interpreter:
     def __init__(self):
         self.scope = {}
+        self.functions = {}
 
     def interpret(self, ast):
         for statement in ast.statements:
@@ -38,3 +39,53 @@ class Interpreter:
 
     def visit_String(self, node):
         return node.value
+
+    def visit_Comparison(self, node):
+        left_val = self.visit(node.left)
+        right_val = self.visit(node.right)
+        operator = node.operator
+
+        if operator == "is":
+            return left_val == right_val
+        elif operator == "is not":
+            return left_val != right_val
+        elif operator == "is greater than":
+            return left_val > right_val
+        elif operator == "is less than":
+            return left_val < right_val
+        elif operator == "is greater than or equal to":
+            return left_val >= right_val
+        elif operator == "is less than or equal to":
+            return left_val <= right_val
+        else:
+            raise Exception(f"Unknown comparison operator: {operator}")
+
+    def visit_IfStatement(self, node):
+        if self.visit(node.condition):
+            self.visit(node.body)
+        else:
+            executed_else_if = False
+            for else_if_block in node.else_if_blocks:
+                if self.visit(else_if_block.condition):
+                    self.visit(else_if_block.body)
+                    executed_else_if = True
+                    break
+            if not executed_else_if and node.else_block:
+                self.visit(node.else_block)
+
+    def visit_ElseIfStatement(self, node):
+        # This will be handled by visit_IfStatement
+        pass
+
+    def visit_ElseStatement(self, node):
+        self.visit(node.body)
+
+    def visit_FunctionDefinition(self, node):
+        self.functions[node.name] = node
+
+    def visit_FunctionCall(self, node):
+        if node.name in self.functions:
+            function_node = self.functions[node.name]
+            self.visit(function_node.body)
+        else:
+            raise Exception(f"Undefined function: {node.name}")
