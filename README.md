@@ -43,6 +43,9 @@ This project is more than just a concept; it's a significant technical undertaki
 
 ## ✨ Features
 
+*   **Lyrical Syntax Tokenizer**: Implements a lexical analyzer that reads HeartbreakCode source text and converts the lyrical prose into a stream of recognized tokens. This component identifies core language keywords (e.g., 'The story of us is'), identifiers (variable names), operators, and literals (strings, numbers), forming the foundational step for code interpretation.
+*   **Core Grammar Parser and Abstract Syntax Tree (AST) Generation**: Develops a parser that understands the foundational grammar of HeartbreakCode. This initial grammar supports variable assignment (e.g., `The story of us is 1989`) and a basic console output command (e.g., `Speak Now: 'hello world'`). The parser consumes the token stream and builds an Abstract Syntax Tree (AST) that represents the program's structure.
+*   **Simple Runtime Interpreter**: Creates a basic runtime environment that can walk the Abstract Syntax Tree (AST) and execute the program's logic. This initial interpreter is capable of managing a simple variable scope, handling assignments, and printing the values of variables or literals to the console, allowing the first 'lyrical code' snippets to be executed.
 *   **Lyrical & Expressive Syntax:** Write code that reads like a pop song. Assign variables with `The story of us is...`, define functions as a `Verse`, and handle logic with the regret-filled `Would've, Could've, Should've` construct.
 *   **Emotionally Resonant Control Flow:** Don't just loop—put it on repeat. The `Encore` keyword lets you relive memories (or mistakes) until a condition is met.
 *   **Built-in I/O (Theatrically):** Don't just `print`. Instead, you can `Scream it out:`, `Whisper:`, or `Write in my diary:`.
