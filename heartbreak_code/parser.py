@@ -1,3 +1,6 @@
+import json
+import requests
+
 class ASTNode:
     pass
 
@@ -131,6 +134,148 @@ class DecodeMessage(ASTNode):
     def __init__(self, text, pattern):
         self.text = text
         self.pattern = pattern
+
+class ReadTheLetter(ASTNode):
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+class WriteInTheDiary(ASTNode):
+    def __init__(self, file_path, content):
+        self.file_path = file_path
+        self.content = content
+
+class DoesTheVaultContain(ASTNode):
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+class SpillYourGuts(ASTNode):
+    def __init__(self, variable_name):
+        self.variable_name = variable_name
+
+class SendMessage(ASTNode):
+    def __init__(self, url, method, headers, body):
+        self.url = url
+        self.method = method
+        self.headers = headers
+        self.body = body
+
+class UntangleStory(ASTNode):
+    def __init__(self, json_string):
+        self.json_string = json_string
+
+class WeaveStory(ASTNode):
+    def __init__(self, liner_notes_or_tracklist):
+        self.liner_notes_or_tracklist = liner_notes_or_tracklist
+
+class LookInTheMirror(ASTNode):
+    def __init__(self, target, aspect):
+        self.target = target
+        self.aspect = aspect
+
+class InstallAlbum(ASTNode):
+    def __init__(self, album_name):
+        self.album_name = album_name
+
+class PublishAlbum(ASTNode):
+    def __init__(self, album_path):
+        self.album_path = album_path
+
+class SearchAlbums(ASTNode):
+    def __init__(self, query):
+        self.query = query
+
+class DefineSetlistRoute(ASTNode):
+    def __init__(self, method, path, handler_verse_name):
+        self.method = method
+        self.path = path
+        self.handler_verse_name = handler_verse_name
+
+class StartTheSetlist(ASTNode):
+    def __init__(self, port):
+        self.port = port
+
+class StopTheSetlist(ASTNode):
+    def __init__(self):
+        pass
+
+class SetlistResponseSend(ASTNode):
+    def __init__(self, content):
+        self.content = content
+
+class SetlistResponseJson(ASTNode):
+    def __init__(self, data):
+        self.data = data
+
+class SetlistResponseStatus(ASTNode):
+    def __init__(self, code):
+        self.code = code
+
+class SetlistRequestPath(ASTNode):
+    def __init__(self):
+        pass
+
+class SetlistRequestMethod(ASTNode):
+    def __init__(self):
+        pass
+
+class SetlistRequestBody(ASTNode):
+    def __init__(self):
+        pass
+
+class SetlistRequestHeader(ASTNode):
+    def __init__(self, header_name):
+        self.header_name = header_name
+
+class SetlistRequestHeader(ASTNode):
+    def __init__(self, header_name):
+        self.header_name = header_name
+
+class OpenTheArchives(ASTNode):
+    def __init__(self, db_name):
+        self.db_name = db_name
+
+class CloseTheArchives(ASTNode):
+    def __init__(self):
+        pass
+
+class QueryTheArchives(ASTNode):
+    def __init__(self, query, params):
+        self.query = query
+        self.params = params
+
+class CreateArchiveTable(ASTNode):
+    def __init__(self, table_name, columns):
+        self.table_name = table_name
+        self.columns = columns
+
+class InsertIntoArchive(ASTNode):
+    def __init__(self, table_name, data):
+        self.table_name = table_name
+        self.data = data
+
+class SelectFromArchive(ASTNode):
+    def __init__(self, table_name, columns, where_clause, params):
+        self.table_name = table_name
+        self.columns = columns
+        self.where_clause = where_clause
+        self.params = params
+
+class UpdateArchive(ASTNode):
+    def __init__(self, table_name, set_clause, where_clause, params):
+        self.table_name = table_name
+        self.set_clause = set_clause
+        self.where_clause = where_clause
+        self.params = params
+
+class DeleteFromArchive(ASTNode):
+    def __init__(self, table_name, where_clause, params):
+        self.table_name = table_name
+        self.where_clause = where_clause
+        self.params = params
+
+class TellMeWhy(ASTNode):
+    def __init__(self):
+        pass
 
 class Parser:
     def __init__(self, tokens):
@@ -295,6 +440,66 @@ class Parser:
             return self.feature_import_statement()
         elif self.current_token.type == "WAIT_FOR":
             return self.wait_for_statement()
+        elif self.current_token.type == "READ_THE_LETTER":
+            return self.read_the_letter_statement()
+        elif self.current_token.type == "WRITE_IN_THE_DIARY":
+            return self.write_in_the_diary_statement()
+        elif self.current_token.type == "DOES_THE_VAULT_CONTAIN":
+            return self.does_the_vault_contain_statement()
+        elif self.current_token.type == "SPILL_YOUR_GUTS":
+            return self.spill_your_guts_statement()
+        elif self.current_token.type == "TELL_ME_WHY":
+            return self.tell_me_why_statement()
+        elif self.current_token.type == "SEND_MESSAGE":
+            return self.send_message_statement()
+        elif self.current_token.type == "UNTANGLE_STORY":
+            return self.untangle_story_statement()
+        elif self.current_token.type == "WEAVE_STORY":
+            return self.weave_story_statement()
+        elif self.current_token.type == "LOOK_IN_THE_MIRROR":
+            return self.look_in_the_mirror_statement()
+        elif self.current_token.type == "INSTALL_ALBUM":
+            return self.install_album_statement()
+        elif self.current_token.type == "PUBLISH_ALBUM":
+            return self.publish_album_statement()
+        elif self.current_token.type == "SEARCH_ALBUMS":
+            return self.search_albums_statement()
+        elif self.current_token.type == "DEFINE_SETLIST_ROUTE":
+            return self.define_setlist_route_statement()
+        elif self.current_token.type == "START_THE_SETLIST":
+            return self.start_the_setlist_statement()
+        elif self.current_token.type == "STOP_THE_SETLIST":
+            return self.stop_the_setlist_statement()
+        elif self.current_token.type == "SETLIST_RESPONSE_SEND":
+            return self.setlist_response_send_statement()
+        elif self.current_token.type == "SETLIST_RESPONSE_JSON":
+            return self.setlist_response_json_statement()
+        elif self.current_token.type == "SETLIST_RESPONSE_STATUS":
+            return self.setlist_response_status_statement()
+        elif self.current_token.type == "SETLIST_REQUEST_PATH":
+            return self.setlist_request_path_statement()
+        elif self.current_token.type == "SETLIST_REQUEST_METHOD":
+            return self.setlist_request_method_statement()
+        elif self.current_token.type == "SETLIST_REQUEST_BODY":
+            return self.setlist_request_body_statement()
+        elif self.current_token.type == "SETLIST_REQUEST_HEADER":
+            return self.setlist_request_header_statement()
+        elif self.current_token.type == "OPEN_THE_ARCHIVES":
+            return self.open_the_archives_statement()
+        elif self.current_token.type == "CLOSE_THE_ARCHIVES":
+            return self.close_the_archives_statement()
+        elif self.current_token.type == "QUERY_THE_ARCHIVES":
+            return self.query_the_archives_statement()
+        elif self.current_token.type == "CREATE_ARCHIVE_TABLE":
+            return self.create_archive_table_statement()
+        elif self.current_token.type == "INSERT_INTO_ARCHIVE":
+            return self.insert_into_archive_statement()
+        elif self.current_token.type == "SELECT_FROM_ARCHIVE":
+            return self.select_from_archive_statement()
+        elif self.current_token.type == "UPDATE_ARCHIVE":
+            return self.update_archive_statement()
+        elif self.current_token.type == "DELETE_FROM_ARCHIVE":
+            return self.delete_from_archive_statement()
         
         else:
             raise Exception(f"Unexpected token in parse_statement: {self.current_token.type}")
@@ -327,6 +532,284 @@ class Parser:
         self.eat("EQUALS")
         pattern = self.expression()
         return DecodeMessage(text, pattern)
+
+    def read_the_letter_statement(self):
+        self.eat("READ_THE_LETTER")
+        file_path = self.expression()
+        return ReadTheLetter(file_path)
+
+    def write_in_the_diary_statement(self):
+        self.eat("WRITE_IN_THE_DIARY")
+        file_path = self.expression()
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # content=
+        self.eat("EQUALS")
+        content = self.expression()
+        return WriteInTheDiary(file_path, content)
+
+    def does_the_vault_contain_statement(self):
+        self.eat("DOES_THE_VAULT_CONTAIN")
+        file_path = self.expression()
+        return DoesTheVaultContain(file_path)
+
+    def spill_your_guts_statement(self):
+        self.eat("SPILL_YOUR_GUTS")
+        variable_name = self.current_token.value
+        self.eat("IDENTIFIER")
+        return SpillYourGuts(variable_name)
+
+    def tell_me_why_statement(self):
+        self.eat("TELL_ME_WHY")
+        return TellMeWhy()
+
+    def send_message_statement(self):
+        self.eat("SEND_MESSAGE")
+        self.eat("TO_URL")
+        url = self.expression()
+        self.eat("WITH_METHOD")
+        method = self.expression()
+        headers = None
+        if self.current_token and self.current_token.type == "WITH_HEADERS":
+            self.eat("WITH_HEADERS")
+            headers = self.liner_notes_literal()
+        body = None
+        if self.current_token and self.current_token.type == "WITH_BODY":
+            self.eat("WITH_BODY")
+            body = self.expression()
+        return SendMessage(url, method, headers, body)
+
+    def untangle_story_statement(self):
+        self.eat("UNTANGLE_STORY")
+        json_string = self.expression()
+        return UntangleStory(json_string)
+
+    def weave_story_statement(self):
+        self.eat("WEAVE_STORY")
+        liner_notes_or_tracklist = self.expression()
+        return WeaveStory(liner_notes_or_tracklist)
+
+    def look_in_the_mirror_statement(self):
+        self.eat("LOOK_IN_THE_MIRROR")
+        target = self.expression()
+        aspect = None
+        if self.current_token and self.current_token.type in ("PROPERTIES_OF", "VERSES_OF"):
+            aspect_token = self.current_token
+            self.eat(aspect_token.type)
+            aspect = aspect_token.value
+        return LookInTheMirror(target, aspect)
+
+    def look_in_the_mirror_statement(self):
+        self.eat("LOOK_IN_THE_MIRROR")
+        target = self.expression()
+        aspect = None
+        if self.current_token and self.current_token.type in ("PROPERTIES_OF", "VERSES_OF"):
+            aspect_token = self.current_token
+            self.eat(aspect_token.type)
+            aspect = aspect_token.value
+        return LookInTheMirror(target, aspect)
+
+    def install_album_statement(self):
+        self.eat("INSTALL_ALBUM")
+        album_name = self.expression()
+        return InstallAlbum(album_name)
+
+    def publish_album_statement(self):
+        self.eat("PUBLISH_ALBUM")
+        album_path = self.expression()
+        return PublishAlbum(album_path)
+
+    def search_albums_statement(self):
+        self.eat("SEARCH_ALBUMS")
+        query = self.expression()
+        return SearchAlbums(query)
+
+    def define_setlist_route_statement(self):
+        self.eat("DEFINE_SETLIST_ROUTE")
+        method = self.expression()
+        self.eat("STRING_SINGLE") # Assuming path is a string literal
+        path = self.tokens[self.position - 1].value.strip("'").strip('"')
+        self.eat("FOR_VERSE") # New token for 'for verse'
+        self.eat("STRING_SINGLE") # Assuming handler verse name is a string literal
+        handler_verse_name = self.tokens[self.position - 1].value.strip("'").strip('"')
+        return DefineSetlistRoute(method, path, handler_verse_name)
+
+    def start_the_setlist_statement(self):
+        self.eat("START_THE_SETLIST")
+        port = None
+        if self.current_token and self.current_token.type == "ON_PORT":
+            self.eat("ON_PORT")
+            port = self.expression()
+        return StartTheSetlist(port)
+
+    def stop_the_setlist_statement(self):
+        self.eat("STOP_THE_SETLIST")
+        return StopTheSetlist()
+
+    def setlist_response_send_statement(self):
+        self.eat("SETLIST_RESPONSE_SEND")
+        content = self.expression()
+        return SetlistResponseSend(content)
+
+    def setlist_response_json_statement(self):
+        self.eat("SETLIST_RESPONSE_JSON")
+        data = self.expression()
+        return SetlistResponseJson(data)
+
+    def setlist_response_status_statement(self):
+        self.eat("SETLIST_RESPONSE_STATUS")
+        code = self.expression()
+        return SetlistResponseStatus(code)
+
+    def setlist_request_path_statement(self):
+        self.eat("SETLIST_REQUEST_PATH")
+        return SetlistRequestPath()
+
+    def setlist_request_method_statement(self):
+        self.eat("SETLIST_REQUEST_METHOD")
+        return SetlistRequestMethod()
+
+    def setlist_request_body_statement(self):
+        self.eat("SETLIST_REQUEST_BODY")
+        return SetlistRequestBody()
+
+    def setlist_request_header_statement(self):
+        self.eat("SETLIST_REQUEST_HEADER")
+        header_name = self.expression()
+        return SetlistRequestHeader(header_name)
+
+    def setlist_request_header_statement(self):
+        self.eat("SETLIST_REQUEST_HEADER")
+        header_name = self.expression()
+        return SetlistRequestHeader(header_name)
+
+    def open_the_archives_statement(self):
+        self.eat("OPEN_THE_ARCHIVES")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # db_name=
+        self.eat("EQUALS")
+        db_name = self.expression()
+        return OpenTheArchives(db_name)
+
+    def close_the_archives_statement(self):
+        self.eat("CLOSE_THE_ARCHIVES")
+        return CloseTheArchives()
+
+    def query_the_archives_statement(self):
+        self.eat("QUERY_THE_ARCHIVES")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # query=
+        self.eat("EQUALS")
+        query = self.expression()
+        params = []
+        if self.current_token and self.current_token.type == "COMMA":
+            self.eat("COMMA")
+            self.eat("IDENTIFIER") # params=
+            self.eat("EQUALS")
+            # Assuming params will be a tracklist literal for now
+            if self.current_token and self.current_token.type == "L_BRACKET":
+                params = self.tracklist_literal()
+            else:
+                raise Exception("Expected a tracklist for query parameters.")
+        return QueryTheArchives(query, params)
+
+    def create_archive_table_statement(self):
+        self.eat("CREATE_ARCHIVE_TABLE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # table_name=
+        self.eat("EQUALS")
+        table_name = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # columns=
+        self.eat("EQUALS")
+        columns = self.liner_notes_literal()
+        return CreateArchiveTable(table_name, columns)
+
+    def insert_into_archive_statement(self):
+        self.eat("INSERT_INTO_ARCHIVE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # table_name=
+        self.eat("EQUALS")
+        table_name = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # data=
+        self.eat("EQUALS")
+        data = self.liner_notes_literal()
+        return InsertIntoArchive(table_name, data)
+
+    def select_from_archive_statement(self):
+        self.eat("SELECT_FROM_ARCHIVE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # table_name=
+        self.eat("EQUALS")
+        table_name = self.expression()
+        columns = String('*') # Default to all columns
+        if self.current_token and self.current_token.type == "COMMA":
+            self.eat("COMMA")
+            self.eat("IDENTIFIER") # columns=
+            self.eat("EQUALS")
+            columns = self.expression()
+        where_clause = None
+        params = []
+        if self.current_token and self.current_token.type == "COMMA":
+            self.eat("COMMA")
+            self.eat("IDENTIFIER") # where_clause=
+            self.eat("EQUALS")
+            where_clause = self.expression()
+            if self.current_token and self.current_token.type == "COMMA":
+                self.eat("COMMA")
+                self.eat("IDENTIFIER") # params=
+                self.eat("EQUALS")
+                if self.current_token and self.current_token.type == "L_BRACKET":
+                    params = self.tracklist_literal()
+                else:
+                    raise Exception("Expected a tracklist for select parameters.")
+        return SelectFromArchive(table_name, columns, where_clause, params)
+
+    def update_archive_statement(self):
+        self.eat("UPDATE_ARCHIVE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # table_name=
+        self.eat("EQUALS")
+        table_name = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # set_clause=
+        self.eat("EQUALS")
+        set_clause = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # where_clause=
+        self.eat("EQUALS")
+        where_clause = self.expression()
+        params = []
+        if self.current_token and self.current_token.type == "COMMA":
+            self.eat("COMMA")
+            self.eat("IDENTIFIER") # params=
+            self.eat("EQUALS")
+            if self.current_token and self.current_token.type == "L_BRACKET":
+                params = self.tracklist_literal()
+            else:
+                raise Exception("Expected a tracklist for update parameters.")
+        return UpdateArchive(table_name, set_clause, where_clause, params)
+
+    def delete_from_archive_statement(self):
+        self.eat("DELETE_FROM_ARCHIVES")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # table_name=
+        self.eat("EQUALS")
+        table_name = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # where_clause=
+        self.eat("EQUALS")
+        where_clause = self.expression()
+        params = []
+        if self.current_token and self.current_token.type == "COMMA":
+            self.eat("COMMA")
+            self.eat("IDENTIFIER") # params=
+            self.eat("EQUALS")
+            if self.current_token and self.current_token.type == "L_BRACKET":
+                params = self.tracklist_literal()
+            else:
+                raise Exception("Expected a tracklist for delete parameters.")
+        return DeleteFromArchive(table_name, where_clause, params)
 
     def function_definition(self):
         self.eat("DEFINE_VERSE")
@@ -468,5 +951,21 @@ class Parser:
             return self.liner_notes_literal()
         elif token.type == "DECODE_MESSAGE":
             return self.decode_message_expression()
+        elif token.type == "SEND_MESSAGE":
+            return self.send_message_statement()
+        elif token.type == "UNTANGLE_STORY":
+            return self.untangle_story_statement()
+        elif token.type == "WEAVE_STORY":
+            return self.weave_story_statement()
+        elif token.type == "LOOK_IN_THE_MIRROR":
+            return self.look_in_the_mirror_statement()
+        elif token.type == "SETLIST_REQUEST_PATH":
+            return self.setlist_request_path_statement()
+        elif token.type == "SETLIST_REQUEST_METHOD":
+            return self.setlist_request_method_statement()
+        elif token.type == "SETLIST_REQUEST_BODY":
+            return self.setlist_request_body_statement()
+        elif token.type == "SETLIST_REQUEST_HEADER":
+            return self.setlist_request_header_statement()
         else:
             raise Exception(f"Expected an expression, got {token.type}")

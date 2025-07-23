@@ -61,7 +61,13 @@ This project is more than just a concept; it's a significant technical undertaki
 *   **Collaborations: A Lyrical Module System**: Import and use 'Verses', 'Albums', and variables from other HeartbreakCode files using `Feature 'file_name'` for better code organization and reusability.
 *   **The 'Afterglow': Asynchronous Operations**: Handle non-blocking operations with `wait for...` to initiate tasks and a callback block (`Then Speak Now: ... End Afterglow`) to process results, introducing an event loop for interactive applications.
 *   **Decoding The Message: Advanced String Pattern Matching**: Integrate a regular expression engine for complex pattern matching, searching, and replacement on strings, framed as 'decoding hidden messages'.
+*   **"The Vault": A File System API**: Interact with the local file system using built-in 'Verses' like `Read The Letter` (read file content), `Write In The Diary` (write to a file), and `Does The Vault Contain` (check for file existence).
+*   **"Spill Your Guts": Interactive Console Input**: Capture user input directly from the console during program execution. Use `Spill Your Guts variable_name` to pause execution and assign user input to a variable.
+*   **"Tell Me Why": Interactive Debugging**: Pause program execution at any point with `Tell Me Why`. This enters a REPL mode, allowing inspection of variable states and controlled resumption of the program, aiding in troubleshooting and understanding code flow.
 *   **Built From the Heart(break):** This isn't a simple text replacement. HeartbreakCode features a custom lexer, a robust parser with an Abstract Syntax Tree (AST), and an interpreter that brings your lyrical code to life.
+*   **The Record Label: A Lyrical Package Manager**: Discover, distribute, and install third-party HeartbreakCode 'Albums' (libraries) to foster a collaborative ecosystem.
+*   **The Archives: Native Database Connectivity**: Interact with file-based SQL databases like SQLite using themed 'Verses' in the 'Greatest Hits' standard library.
+*   **The Setlist: A Web Server Micro-framework**: Build lightweight, interactive web applications and APIs by defining routes and handling HTTP requests with HeartbreakCode syntax.
 *   **Designed for Virality:** Your code is no longer just a set of instructions for a machine. It's a statement. A story. A piece of art ready to be shared on social media, making programming more engaging and culturally relevant.
 
 ## 🚀 Getting Started

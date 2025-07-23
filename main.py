@@ -93,7 +93,7 @@ This is me trying: Speak Now:
 Look what you made me do: Speak Now:
     Speak Now: 'An error occurred: '
     Speak Now: error
-It's over now: Speak Now:
+It's over now:
     Speak Now: 'Cleanup complete.'
 End trying
 
@@ -128,6 +128,85 @@ The story of us is extracted_code Decode The Message Featuring text=secret_messa
 Speak Now: 'Extracted code:'
 Speak Now: extracted_code
 
+# The Vault: File System API
+Write In The Diary 'my_secret_diary.txt' Featuring content='Dear Diary, today I learned about file I/O in HeartbreakCode.'
+Speak Now: 'Wrote to my_secret_diary.txt'
+
+The story of us is diary_content Read The Letter 'my_secret_diary.txt'
+Speak Now: 'Content of diary:'
+Speak Now: diary_content
+
+The story of us is file_exists Does The Vault Contain 'my_secret_diary.txt'
+Speak Now: 'Does my_secret_diary.txt exist?'
+Speak Now: file_exists
+
+The story of us is non_existent_file_exists Does The Vault Contain 'non_existent.txt'
+Speak Now: 'Does non_existent.txt exist?'
+Speak Now: non_existent_file_exists
+
+# Spill Your Guts: Interactive Console Input
+Speak Now: 'What's your favorite HeartbreakCode feature?'
+Spill Your Guts favorite_feature
+Speak Now: 'You said your favorite feature is:'
+Speak Now: favorite_feature
+
+# Tell Me Why: Interactive Debugging
+The story of us is debug_variable 100
+Tell Me Why
+The story of us is debug_variable debug_variable + 50
+Speak Now: 'Debug variable after increment:'
+Speak Now: debug_variable
+
+
+
+# The Record Label: A Lyrical Package Manager
+Speak Now: '\n--- The Record Label ---'
+Perform 'Install Album' Featuring album_name='PopAnthems'
+Perform 'Publish Album' Featuring album_path='./my_new_album.hbc'
+Perform 'Search Albums' Featuring query='love songs'
+
+# The Archives: Native Database Connectivity
+Speak Now: '\n--- The Archives ---'
+Perform 'Open The Archives' Featuring db_name='my_heartbreak_db.db'
+Perform 'Create Archive Table' Featuring table_name='songs', columns=Liner Notes are {id: 'INTEGER PRIMARY KEY', title: 'TEXT', artist: 'TEXT'}
+Perform 'Insert Into Archive' Featuring table_name='songs', data=Liner Notes are {title: 'Love Story', artist: 'Taylor Swift'}
+Perform 'Insert Into Archive' Featuring table_name='songs', data=Liner Notes are {title: 'Drivers License', artist: 'Olivia Rodrigo'}
+The story of us is all_songs Perform 'Select From Archive' Featuring table_name='songs'
+Speak Now: 'All Songs:'
+Speak Now: all_songs
+Perform 'Close The Archives'
+
+# The Setlist: A Web Server Micro-framework
+Speak Now: '\n--- The Setlist ---'
+
+Define Verse 'HandleRoot': Speak Now:
+    Speak Now: 'Handling root request!'
+    The story of us is req_path Perform 'Setlist Request Path'
+    Speak Now: 'Request Path:'
+    Speak Now: req_path
+    Perform 'Setlist Response Send' Featuring content='Hello from HeartbreakCode!'
+End Verse
+
+Define Verse 'HandleJson': Speak Now:
+    Speak Now: 'Handling JSON request!'
+    The story of us is req_method Perform 'Setlist Request Method'
+    Speak Now: 'Request Method:'
+    Speak Now: req_method
+    The story of us is req_body Perform 'Setlist Request Body'
+    Speak Now: 'Request Body:'
+    Speak Now: req_body
+    Perform 'Setlist Response JSON' Featuring data=Liner Notes are {message: 'This is a JSON response', status: 'success'}
+End Verse
+
+Perform 'Define Setlist Route' Featuring method='GET', path='/', for_verse='HandleRoot'
+Perform 'Define Setlist Route' Featuring method='POST', path='/json', for_verse='HandleJson'
+Perform 'Start The Setlist' Featuring port=8000
+Speak Now: 'Web server started on http://localhost:8000. Press Ctrl+C to stop.'
+# In a real scenario, you'd keep the interpreter running or have a mechanism to stop the server.
+# For this example, we'll just let it start and then the script will exit.
+# You can test by opening http://localhost:8000 in your browser or using curl.
+# curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"value\"}" http://localhost:8000/json
+# Perform 'Stop The Setlist' # Uncomment to stop the server programmatically
 
 """
     run_heartbreak_code(code)
