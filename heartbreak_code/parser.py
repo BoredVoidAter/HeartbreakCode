@@ -118,6 +118,20 @@ class ReturnStatement(ASTNode):
     def __init__(self, value):
         self.value = value
 
+class FeatureImport(ASTNode):
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+class WaitFor(ASTNode):
+    def __init__(self, task, callback_body):
+        self.task = task
+        self.callback_body = callback_body
+
+class DecodeMessage(ASTNode):
+    def __init__(self, text, pattern):
+        self.text = text
+        self.pattern = pattern
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -137,6 +151,9 @@ class Parser:
     def parse(self):
         statements = []
         while self.current_token:
+            if self.current_token.type == "COMMENT":
+                self.eat("COMMENT")
+                continue
             statements.append(self.parse_statement())
         return Program(statements)
 
@@ -154,9 +171,9 @@ class Parser:
 
     def expression(self):
         token = self.current_token
-        if token.type == "STRING":
-            self.eat("STRING")
-            return String(token.value.strip("'\""))
+        if token.type == "STRING_SINGLE" or token.type == "STRING_DOUBLE":
+            self.eat(token.type)
+            return String(token.value.strip("'").strip('"'))
         elif token.type == "NUMBER":
             self.eat("NUMBER")
             return Number(int(token.value))
@@ -207,9 +224,8 @@ class Parser:
                 else_body.append(self.parse_statement())
             else_block = ElseStatement(Program(else_body))
         
+        self.eat("END_VERSE")
         return IfStatement(condition, Program(body), else_if_blocks, else_block)
-
-    return IfStatement(condition, Program(body), else_if_blocks, else_block)
 
     def tracklist_literal(self):
         self.eat("L_BRACKET")
@@ -275,12 +291,46 @@ class Parser:
             return self.try_catch_finally_statement()
         elif self.current_token.type == "LINER_NOTES_ARE":
             return self.liner_notes_literal()
+        elif self.current_token.type == "FEATURE":
+            return self.feature_import_statement()
+        elif self.current_token.type == "WAIT_FOR":
+            return self.wait_for_statement()
+        
         else:
             raise Exception(f"Unexpected token in parse_statement: {self.current_token.type}")
 
+    def feature_import_statement(self):
+        self.eat("FEATURE")
+        file_name_token = self.current_token
+        self.eat("STRING_SINGLE") # Ensure it's a string token
+        file_name = file_name_token.value.strip("'").strip('"')
+        return FeatureImport(file_name)
+
+    def wait_for_statement(self):
+        self.eat("WAIT_FOR")
+        task = self.expression() # The expression representing the async task
+        self.eat("THEN_SPEAK_NOW")
+        callback_body = []
+        while self.current_token and self.current_token.type != "END_AFTERGLOW":
+            callback_body.append(self.parse_statement())
+        self.eat("END_AFTERGLOW")
+        return WaitFor(task, Program(callback_body))
+
+    def decode_message_expression(self):
+        self.eat("DECODE_MESSAGE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # text=
+        self.eat("EQUALS")
+        text = self.expression()
+        self.eat("COMMA")
+        self.eat("IDENTIFIER") # pattern=
+        self.eat("EQUALS")
+        pattern = self.expression()
+        return DecodeMessage(text, pattern)
+
     def function_definition(self):
         self.eat("DEFINE_VERSE")
-        self.eat("STRING")
+        self.eat("STRING_SINGLE")
         name = self.tokens[self.position - 1].value.strip("''")
         parameters = []
         if self.current_token and self.current_token.type == "FEATURING":
@@ -290,6 +340,7 @@ class Parser:
                 self.eat("IDENTIFIER")
                 if self.current_token and self.current_token.type == "COMMA":
                     self.eat("COMMA")
+        self.eat("COLON") # Eat the colon after function name/parameters
         self.eat("SPEAK_NOW")
         body = []
         while self.current_token and self.current_token.type != "END_VERSE":
@@ -299,7 +350,7 @@ class Parser:
 
     def function_call(self):
         self.eat("PERFORM")
-        self.eat("STRING")
+        self.eat("STRING_SINGLE")
         name = self.tokens[self.position - 1].value.strip("''")
         arguments = {}
         if self.current_token and self.current_token.type == "FEATURING":
@@ -342,7 +393,7 @@ class Parser:
                 self.eat("IDENTIFIER")
                 self.eat("EQUALS")
                 param_value = self.expression()
-                arguments[param_name] = param_value
+                args[param_name] = param_value
                 if self.current_token and self.current_token.type == "COMMA":
                     self.eat("COMMA")
         return RecordInstantiation(album_name, args)
@@ -398,9 +449,9 @@ class Parser:
 
     def expression(self):
         token = self.current_token
-        if token.type == "STRING":
-            self.eat("STRING")
-            return String(token.value.strip("''""))
+        if token.type == "STRING_SINGLE" or token.type == "STRING_DOUBLE":
+            self.eat(token.type)
+            return String(token.value.strip("'").strip('"'))
         elif token.type == "NUMBER":
             self.eat("NUMBER")
             return Number(int(token.value))
@@ -415,5 +466,7 @@ class Parser:
             return self.tracklist_literal()
         elif token.type == "LINER_NOTES_ARE":
             return self.liner_notes_literal()
+        elif token.type == "DECODE_MESSAGE":
+            return self.decode_message_expression()
         else:
             raise Exception(f"Expected an expression, got {token.type}")

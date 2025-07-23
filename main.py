@@ -113,5 +113,21 @@ Speak Now: result
 The story of us is num_string '123'
 The story of us is converted_num Perform 'Rewrite History' Featuring value=num_string, target_type='number'
 Speak Now: converted_num
+
+# Collaborations: A Lyrical Module System
+Feature 'my_module'
+
+# The 'Afterglow': Asynchronous Operations
+wait for 'long_running_task' Then Speak Now:
+    Speak Now: 'Async task finished!'
+End Afterglow
+
+# Decoding The Message: Advanced String Pattern Matching
+The story of us is secret_message 'The secret code is 123-ABC.'
+The story of us is extracted_code Decode The Message Featuring text=secret_message, pattern="TEST"
+Speak Now: 'Extracted code:'
+Speak Now: extracted_code
+
+
 """
     run_heartbreak_code(code)

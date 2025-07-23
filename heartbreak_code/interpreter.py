@@ -1,5 +1,11 @@
 
+import os
+import re
+import time # For simulating async operations
+
 from heartbreak_code.greatest_hits import GreatestHits
+from heartbreak_code.tokenizer import Tokenizer
+from heartbreak_code.parser import Parser
 
 class Interpreter:
     def __init__(self):
@@ -197,7 +203,7 @@ class Interpreter:
                 # methods would be defined within the AlbumDefinition.
                 return self.functions[member]
             else:
-                raise Exception(f"Undefined member '{member}' for Record of Album '{obj.get("__album_name__")}'")
+                raise Exception(f"Undefined member '{member}' for Record of Album '{obj.get('__album_name__')}'")
         elif isinstance(obj, dict) and obj.get("__type__") == "LinerNotes":
             if member in obj:
                 return obj[member]
@@ -235,3 +241,56 @@ class Interpreter:
         if key not in liner_notes:
             raise Exception(f"Key '{key}' not found in Liner Notes.")
         return liner_notes[key]
+
+    def visit_FeatureImport(self, node):
+        file_path = node.file_name
+        # Assuming HeartbreakCode files have a .hc extension and are in the same directory
+        full_path = os.path.join(os.path.dirname(__file__), f"{file_path}.hc")
+        if not os.path.exists(full_path):
+            raise Exception(f"Module not found: {full_path}")
+
+        with open(full_path, "r") as f:
+            module_code = f.read()
+
+        # Tokenize and parse the imported module
+        tokenizer = Tokenizer(module_code)
+        tokens = tokenizer.tokenize()
+        parser = Parser(tokens)
+        module_ast = parser.parse()
+
+        # Create a new interpreter instance for the module to avoid scope pollution
+        module_interpreter = Interpreter()
+        module_interpreter.interpret(module_ast)
+
+        # Expose module's global variables, functions, and albums
+        # This is a simplified approach; a real module system might be more selective
+        for var_name, var_value in module_interpreter.scopes[0].items():
+            self.assign_variable(var_name, var_value)
+        for func_name, func_node in module_interpreter.functions.items():
+            self.functions[func_name] = func_node
+        for album_name, album_node in module_interpreter.albums.items():
+            self.albums[album_name] = album_node
+
+    def visit_WaitFor(self, node):
+        # Simulate an asynchronous task
+        task_result = self.visit(node.task)
+        print(f"Performing asynchronous task: {task_result}")
+        time.sleep(1) # Simulate delay
+        print("Asynchronous task completed.")
+
+        # Execute the callback body
+        self.push_scope()
+        self.visit(node.callback_body)
+        self.pop_scope()
+
+    def visit_DecodeMessage(self, node):
+        text = self.visit(node.text)
+        pattern = self.visit(node.pattern)
+
+        if not isinstance(text, str) or not isinstance(pattern, str):
+            raise Exception("Type error: 'Decode The Message' expects strings for text and pattern.")
+
+        match = re.search(pattern, text)
+        if match:
+            return match.group(0) # Return the first match
+        return None # No match found
