@@ -65,6 +65,36 @@ class Tokenizer:
             ("FOR_VERSE", r"for verse"),
             ("ON_PORT", r"on port"),
 
+            # Concurrency keywords
+            ("BACKUP_DANCER", r"Backup Dancer"),
+            ("PERFORM_IN_PARALLEL", r"Perform in Parallel"),
+
+            # LSP keywords
+            ("LSP_START", r"Start The Producer's Notes"),
+            ("LSP_STOP", r"Stop The Producer's Notes"),
+            ("LSP_PROVIDE_COMPLETIONS", r"Provide Completions"),
+            ("LSP_DIAGNOSE", r"Diagnose"),
+            ("LSP_GO_TO_DEFINITION", r"Go To Definition"),
+            ("LSP_HOVER", r"Hover Over"),
+
+            # Generics keywords
+            ("GENERIC", r"Generic"),
+            ("TYPE_OF", r"type of"),
+
+            # Soundcheck keywords
+            ("END_SOUNDCHECK", r"End Soundcheck"),
+            ("END_TEST", r"End Test"),
+            ("I_EXPECT", r"I expect"),
+            ("TO_BE_GREATER_THAN", r"to be greater than"),
+            ("TO_BE_LESS_THAN", r"to be less than"),
+            ("TO_NOT_BE", r"to not be"),
+            ("TO_BE", r"to be"),
+            ("TO_BE_TRUE", r"to be true"),
+            ("TO_BE_FALSE", r"to be false"),
+            ("TO_THROW_AN_ERROR", r"to throw an error"),
+            ("SOUNDCHECK", r"Soundcheck"),
+            ("TEST", r"Test"),
+
             # Two-word keywords
             ("IS_GREATER_THAN", r"is greater than"),
             ("IS_LESS_THAN", r"is less than"),

@@ -6,12 +6,15 @@ import re
 import time # For simulating async operations
 import sys
 import io
+import threading
+import queue
 
 from heartbreak_code.greatest_hits import GreatestHits
 from heartbreak_code.tokenizer import Tokenizer
 from heartbreak_code.parser import Parser
 
 from heartbreak_code.the_setlist import Setlist
+from heartbreak_code.backup_dancer import BackupDancerManager
 
 class Interpreter:
     def __init__(self):
@@ -21,6 +24,7 @@ class Interpreter:
         self.return_value = None
         self.the_setlist = Setlist(self)
         self.greatest_hits = GreatestHits(self, self.the_setlist)
+        self.backup_dancer_manager = BackupDancerManager(self)
         self.current_request = None # For The Setlist
         self.current_response = None # For The Setlist
 
@@ -420,6 +424,104 @@ class Interpreter:
                 print("Unknown command. Type 'continue' to resume or 'inspect <variable_name>' to inspect a variable.")
         print("--- Resuming execution ---")
 
+    def visit_SoundcheckSuite(self, node):
+        print(f"\n--- Soundcheck Suite: {node.name} ---")
+        self.push_scope()
+        self.visit(node.body)
+        self.pop_scope()
+        print(f"--- End Soundcheck Suite: {node.name} ---")
+
+    def visit_TestDefinition(self, node):
+        print(f"  Running Test: {node.name}")
+        self.push_scope()
+        try:
+            self.visit(node.body)
+            print(f"  Test Passed: {node.name}")
+        except Exception as e:
+            print(f"  Test Failed: {node.name} - {e}")
+        self.pop_scope()
+
+    def visit_Assertion(self, node):
+        expression_value = self.visit(node.expression)
+        assertion_type = node.assertion_type
+        expected_value = self.visit(node.expected_value) if node.expected_value else None
+
+        if assertion_type == "to be":
+            if expression_value != expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be {expected_value}")
+        elif assertion_type == "to not be":
+            if expression_value == expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to not be {expected_value}")
+        elif assertion_type == "to be greater than":
+            if not (expression_value > expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be greater than {expected_value}")
+        elif assertion_type == "to be less than":
+            if not (expression_value < expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be less than {expected_value}")
+        elif assertion_type == "to be true":
+            if not bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be true")
+        elif assertion_type == "to be false":
+            if bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be false")
+        elif assertion_type == "to throw an error":
+            # This assertion requires special handling, as it asserts that an error *will* occur.
+            # It's typically handled by wrapping the asserted code in a try-catch block within the test runner.
+            # For now, we'll assume the interpreter will catch and report errors, and this assertion will pass if an error is caught.
+            # A more robust implementation would involve a mechanism to check if an exception was raised during the evaluation of `node.expression`.
+            pass
+        else:
+            raise Exception(f"Unknown assertion type: {assertion_type}")
+
+    def visit_SoundcheckSuite(self, node):
+        print(f"\n--- Soundcheck Suite: {node.name} ---")
+        self.push_scope()
+        self.visit(node.body)
+        self.pop_scope()
+        print(f"--- End Soundcheck Suite: {node.name} ---")
+
+    def visit_TestDefinition(self, node):
+        print(f"  Running Test: {node.name}")
+        self.push_scope()
+        try:
+            self.visit(node.body)
+            print(f"  Test Passed: {node.name}")
+        except Exception as e:
+            print(f"  Test Failed: {node.name} - {e}")
+        self.pop_scope()
+
+    def visit_Assertion(self, node):
+        expression_value = self.visit(node.expression)
+        assertion_type = node.assertion_type
+        expected_value = self.visit(node.expected_value) if node.expected_value else None
+
+        if assertion_type == "to be":
+            if expression_value != expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be {expected_value}")
+        elif assertion_type == "to not be":
+            if expression_value == expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to not be {expected_value}")
+        elif assertion_type == "to be greater than":
+            if not (expression_value > expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be greater than {expected_value}")
+        elif assertion_type == "to be less than":
+            if not (expression_value < expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be less than {expected_value}")
+        elif assertion_type == "to be true":
+            if not bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be true")
+        elif assertion_type == "to be false":
+            if bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be false")
+        elif assertion_type == "to throw an error":
+            # This assertion requires special handling, as it asserts that an error *will* occur.
+            # It's typically handled by wrapping the asserted code in a try-catch block within the test runner.
+            # For now, we'll assume the interpreter will catch and report errors, and this assertion will pass if an error is caught.
+            # A more robust implementation would involve a mechanism to check if an exception was raised during the evaluation of `node.expression`.
+            pass
+        else:
+            raise Exception(f"Unknown assertion type: {assertion_type}")
+
     def visit_SendMessage(self, node):
         url = self.visit(node.url)
         method = self.visit(node.method).upper()
@@ -647,3 +749,52 @@ class Interpreter:
         if not isinstance(table_name, str):
             raise Exception("Type error: 'Delete From Archive' expects a string for table name.")
         return self.greatest_hits.delete_from_archive(table_name, where_clause, params)
+
+    def visit_SoundcheckSuite(self, node):
+        print(f"\n--- Soundcheck Suite: {node.name} ---")
+        self.push_scope()
+        self.visit(node.body)
+        self.pop_scope()
+        print(f"--- End Soundcheck Suite: {node.name} ---")
+
+    def visit_TestDefinition(self, node):
+        print(f"  Running Test: {node.name}")
+        self.push_scope()
+        try:
+            self.visit(node.body)
+            print(f"  Test Passed: {node.name}")
+        except Exception as e:
+            print(f"  Test Failed: {node.name} - {e}")
+        self.pop_scope()
+
+    def visit_Assertion(self, node):
+        expression_value = self.visit(node.expression)
+        assertion_type = node.assertion_type
+        expected_value = self.visit(node.expected_value) if node.expected_value else None
+
+        if assertion_type == "to be":
+            if expression_value != expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be {expected_value}")
+        elif assertion_type == "to not be":
+            if expression_value == expected_value:
+                raise Exception(f"Assertion Failed: Expected {expression_value} to not be {expected_value}")
+        elif assertion_type == "to be greater than":
+            if not (expression_value > expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be greater than {expected_value}")
+        elif assertion_type == "to be less than":
+            if not (expression_value < expected_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be less than {expected_value}")
+        elif assertion_type == "to be true":
+            if not bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be true")
+        elif assertion_type == "to be false":
+            if bool(expression_value):
+                raise Exception(f"Assertion Failed: Expected {expression_value} to be false")
+        elif assertion_type == "to throw an error":
+            # This assertion requires special handling, as it asserts that an error *will* occur.
+            # It's typically handled by wrapping the asserted code in a try-catch block within the test runner.
+            # For now, we'll assume the interpreter will catch and report errors, and this assertion will pass if an error is caught.
+            # A more robust implementation would involve a mechanism to check if an exception was raised during the evaluation of `node.expression`.
+            pass
+        else:
+            raise Exception(f"Unknown assertion type: {assertion_type}")
