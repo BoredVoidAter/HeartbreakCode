@@ -4,10 +4,14 @@ import requests
 import os
 import re
 import time # For simulating async operations
+import sys
+import io
 
 from heartbreak_code.greatest_hits import GreatestHits
 from heartbreak_code.tokenizer import Tokenizer
 from heartbreak_code.parser import Parser
+
+from heartbreak_code.the_setlist import Setlist
 
 class Interpreter:
     def __init__(self):
@@ -15,7 +19,8 @@ class Interpreter:
         self.functions = {}
         self.albums = {}
         self.return_value = None
-        self.greatest_hits = GreatestHits(self)
+        self.the_setlist = Setlist(self)
+        self.greatest_hits = GreatestHits(self, self.the_setlist)
         self.current_request = None # For The Setlist
         self.current_response = None # For The Setlist
 
@@ -74,7 +79,30 @@ class Interpreter:
 
     def visit_SpeakNow(self, node):
         value = self.visit(node.value)
-        print(value)
+        # Use sys.stdout.write to ensure output is captured by StringIO
+        sys.stdout.write(str(value) + "\n")
+
+    def render_code(self, source_code: str) -> str:
+        """
+        Executes HeartbreakCode and captures its output.
+        Useful for templating engines or evaluating expressions.
+        """
+        # Save original stdout
+        original_stdout = sys.stdout
+        # Redirect stdout to a string buffer
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+
+        try:
+            tokenizer = Tokenizer(source_code)
+            tokens = tokenizer.tokenize()
+            parser = Parser(tokens)
+            ast = parser.parse()
+            self.interpret(ast)
+            return captured_output.getvalue()
+        finally:
+            # Restore original stdout
+            sys.stdout = original_stdout
 
     def visit_Identifier(self, node):
         return self.resolve_variable(node.name)

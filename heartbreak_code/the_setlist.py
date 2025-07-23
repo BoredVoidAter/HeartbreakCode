@@ -4,6 +4,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import threading
+import os
+
+from heartbreak_code.storyboard import Storyboard
+
 
 class Request:
     def __init__(self, handler):
@@ -16,8 +20,9 @@ class Request:
             self.body = handler.rfile.read(content_length).decode('utf-8')
 
 class Response:
-    def __init__(self, handler):
+    def __init__(self, handler, setlist_instance):
         self.handler = handler
+        self.setlist_instance = setlist_instance
         self.status_code = 200
         self.headers = {}
         self.body = ""
@@ -39,6 +44,9 @@ class Response:
         self.body = json.dumps(data)
         self._send_response()
 
+    def render(self, template_name, context=None):
+        self.setlist_instance.render_template(self, template_name, context)
+
     def _send_response(self):
         self.handler.send_response(self.status_code)
         for name, value in self.headers.items():
@@ -47,7 +55,7 @@ class Response:
         self.handler.wfile.write(self.body.encode('utf-8'))
 
 class Setlist:
-    def __init__(self):
+    def __init__(self, interpreter):
         self.routes = {
             'GET': {},
             'POST': {},
@@ -56,6 +64,17 @@ class Setlist:
         }
         self.server = None
         self.server_thread = None
+        self.interpreter = interpreter
+        self.storyboard = Storyboard(interpreter)
+
+    def render_template(self, res, template_name, context=None):
+        template_path = os.path.join(os.getcwd(), "templates", template_name)
+        try:
+            rendered_html = self.storyboard.render(template_path, context)
+            res.header('Content-Type', 'text/html').send(rendered_html)
+        except Exception as e:
+            print(f"The Setlist: Error rendering template {template_name}: {e}")
+            res.status(500).send(f"Internal Server Error: {e}")
 
     def _add_route(self, method, path, handler_func):
         self.routes[method][path] = handler_func
@@ -79,7 +98,7 @@ class Setlist:
 
         if method in self.routes and path in self.routes[method]:
             req = Request(handler)
-            res = Response(handler)
+            res = Response(handler, self)
             try:
                 self.routes[method][path](req, res)
             except Exception as e:

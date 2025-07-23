@@ -2,13 +2,11 @@
 import os
 import sqlite3
 from heartbreak_code.the_archives import TheArchives
-from heartbreak_code.the_setlist import Setlist
-
 class GreatestHits:
-    def __init__(self, interpreter):
+    def __init__(self, interpreter, setlist_instance):
         self.interpreter = interpreter
         self.the_archives = TheArchives()
-        self.the_setlist = Setlist()
+        self.the_setlist = setlist_instance
 
     def change_the_key(self, text, case_type):
         if not isinstance(text, str):
