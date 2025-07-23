@@ -17,10 +17,12 @@ def run_heartbreak_code(source_code):
 
 if __name__ == "__main__":
     code = """
+# Variable Assignment
 The story of us is my_variable 1989
 Speak Now: 'Hello, HeartbreakCode!'
 Speak Now: my_variable
 
+# Conditional Logic
 Would've my_variable is 1989 Speak Now:
     Speak Now: 'It was a good year!'
 Could've my_variable is greater than 2000 Speak Now:
@@ -29,6 +31,7 @@ Should've Speak Now:
     Speak Now: 'Somewhere in between.'
 End Verse
 
+# Function Definition and Call
 Define Verse 'MyChorus': Speak Now:
     Speak Now: 'This is my chorus!'
 End Verse
@@ -65,5 +68,50 @@ End Verse
 The story of us is my_song_title Perform 'WriteASong' Featuring title='All Too Well', artist='Taylor Swift'
 Speak Now: 'The song I wrote is: '
 Speak Now: my_song_title
+
+# Album and Record Example
+Define Album 'PopStar':
+    The story of us is name 'Default Name'
+    The story of us is age 0
+    Define Verse 'Introduce': Speak Now:
+        Speak Now: 'Hi, my name is '
+        Speak Now: name
+        Speak Now: ' and I am '
+        Speak Now: age
+        Speak Now: ' years old.'
+    End Verse
+End Album
+
+The story of us is taylor a new Record of PopStar Featuring name='Taylor Swift', age=34
+Perform 'Introduce' on taylor
+
+# Error Handling Example
+This is me trying: Speak Now:
+    Speak Now: 'Attempting a risky operation...'
+    The story of us is x 10 / 0 # This will cause an error
+    Speak Now: 'This line will not be reached.'
+Look what you made me do: Speak Now:
+    Speak Now: 'An error occurred: '
+    Speak Now: error
+It's over now: Speak Now:
+    Speak Now: 'Cleanup complete.'
+End trying
+
+# Liner Notes Example
+The story of us is album_details Liner Notes are { title: 'Midnights', release_year: 2022, genre: 'Pop' }
+Speak Now: album_details.title
+Speak Now: album_details.release_year
+
+# Greatest Hits Example
+The story of us is original_text 'Hello World'
+The story of us is upper_text Perform 'Change The Key' Featuring text=original_text, case_type='upper'
+Speak Now: upper_text
+
+The story of us is result Perform 'Calculate The Score' Featuring num1=10, num2=5, operation='add'
+Speak Now: result
+
+The story of us is num_string '123'
+The story of us is converted_num Perform 'Rewrite History' Featuring value=num_string, target_type='number'
+Speak Now: converted_num
 """
     run_heartbreak_code(code)

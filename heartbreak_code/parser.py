@@ -1,6 +1,36 @@
 class ASTNode:
     pass
 
+class AlbumDefinition(ASTNode):
+    def __init__(self, name, body):
+        self.name = name
+        self.body = body
+
+class RecordInstantiation(ASTNode):
+    def __init__(self, album_name, args):
+        self.album_name = album_name
+        self.args = args
+
+class MemberAccess(ASTNode):
+    def __init__(self, obj, member):
+        self.obj = obj
+        self.member = member
+
+class TryCatchFinally(ASTNode):
+    def __init__(self, try_body, catch_body, finally_body):
+        self.try_body = try_body
+        self.catch_body = catch_body
+        self.finally_body = finally_body
+
+class LinerNotesLiteral(ASTNode):
+    def __init__(self, pairs):
+        self.pairs = pairs
+
+class LinerNotesAccess(ASTNode):
+    def __init__(self, liner_notes, key):
+        self.liner_notes = liner_notes
+        self.key = key
+
 class Program(ASTNode):
     def __init__(self, statements):
         self.statements = statements
@@ -237,6 +267,14 @@ class Parser:
             return self.for_loop_statement()
         elif self.current_token.type == "THE_FINAL_WORD_IS":
             return self.return_statement()
+        elif self.current_token.type == "DEFINE_ALBUM":
+            return self.album_definition()
+        elif self.current_token.type == "NEW_RECORD_OF":
+            return self.record_instantiation()
+        elif self.current_token.type == "THIS_IS_ME_TRYING":
+            return self.try_catch_finally_statement()
+        elif self.current_token.type == "LINER_NOTES_ARE":
+            return self.liner_notes_literal()
         else:
             raise Exception(f"Unexpected token in parse_statement: {self.current_token.type}")
 
@@ -280,3 +318,102 @@ class Parser:
         self.eat("THE_FINAL_WORD_IS")
         value = self.expression()
         return ReturnStatement(value)
+
+    def album_definition(self):
+        self.eat("DEFINE_ALBUM")
+        name = self.current_token.value
+        self.eat("IDENTIFIER")
+        self.eat("SPEAK_NOW")
+        body = []
+        while self.current_token and self.current_token.type != "END_ALBUM":
+            body.append(self.parse_statement())
+        self.eat("END_ALBUM")
+        return AlbumDefinition(name, Program(body))
+
+    def record_instantiation(self):
+        self.eat("NEW_RECORD_OF")
+        album_name = self.current_token.value
+        self.eat("IDENTIFIER")
+        args = {}
+        if self.current_token and self.current_token.type == "FEATURING":
+            self.eat("FEATURING")
+            while self.current_token and self.current_token.type == "IDENTIFIER":
+                param_name = self.current_token.value
+                self.eat("IDENTIFIER")
+                self.eat("EQUALS")
+                param_value = self.expression()
+                arguments[param_name] = param_value
+                if self.current_token and self.current_token.type == "COMMA":
+                    self.eat("COMMA")
+        return RecordInstantiation(album_name, args)
+
+    def try_catch_finally_statement(self):
+        self.eat("THIS_IS_ME_TRYING")
+        self.eat("SPEAK_NOW")
+        try_body = []
+        while self.current_token and self.current_token.type not in ("LOOK_WHAT_YOU_MADE_ME_DO", "ITS_OVER_NOW", "END_TRYING"):
+            try_body.append(self.parse_statement())
+        
+        catch_body = None
+        if self.current_token and self.current_token.type == "LOOK_WHAT_YOU_MADE_ME_DO":
+            self.eat("LOOK_WHAT_YOU_MADE_ME_DO")
+            self.eat("SPEAK_NOW")
+            catch_body = []
+            while self.current_token and self.current_token.type not in ("ITS_OVER_NOW", "END_TRYING"):
+                catch_body.append(self.parse_statement())
+            catch_body = Program(catch_body)
+
+        finally_body = None
+        if self.current_token and self.current_token.type == "ITS_OVER_NOW":
+            self.eat("ITS_OVER_NOW")
+            self.eat("SPEAK_NOW")
+            finally_body = []
+            while self.current_token and self.current_token.type != "END_TRYING":
+                finally_body.append(self.parse_statement())
+            finally_body = Program(finally_body)
+
+        self.eat("END_TRYING")
+        return TryCatchFinally(Program(try_body), catch_body, finally_body)
+
+    def liner_notes_literal(self):
+        self.eat("LINER_NOTES_ARE")
+        self.eat("L_CURLY_BRACE")
+        pairs = {}
+        while self.current_token and self.current_token.type != "R_CURLY_BRACE":
+            key = self.current_token.value
+            self.eat("IDENTIFIER")
+            self.eat("COLON")
+            value = self.expression()
+            pairs[key] = value
+            if self.current_token and self.current_token.type == "COMMA":
+                self.eat("COMMA")
+        self.eat("R_CURLY_BRACE")
+        return LinerNotesLiteral(pairs)
+
+    def member_access(self, obj_node):
+        self.eat("DOT")
+        member_name = self.current_token.value
+        self.eat("IDENTIFIER")
+        return MemberAccess(obj_node, member_name)
+
+    def expression(self):
+        token = self.current_token
+        if token.type == "STRING":
+            self.eat("STRING")
+            return String(token.value.strip("''""))
+        elif token.type == "NUMBER":
+            self.eat("NUMBER")
+            return Number(int(token.value))
+        elif token.type == "IDENTIFIER":
+            self.eat("IDENTIFIER")
+            if self.current_token and self.current_token.type == "L_BRACKET":
+                return self.tracklist_access(Identifier(token.value))
+            elif self.current_token and self.current_token.type == "DOT":
+                return self.member_access(Identifier(token.value))
+            return Identifier(token.value)
+        elif token.type == "L_BRACKET":
+            return self.tracklist_literal()
+        elif token.type == "LINER_NOTES_ARE":
+            return self.liner_notes_literal()
+        else:
+            raise Exception(f"Expected an expression, got {token.type}")

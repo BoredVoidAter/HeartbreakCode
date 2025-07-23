@@ -1,9 +1,13 @@
 
+from heartbreak_code.greatest_hits import GreatestHits
+
 class Interpreter:
     def __init__(self):
         self.scopes = [{}]
         self.functions = {}
+        self.albums = {}
         self.return_value = None
+        self.greatest_hits = GreatestHits(self)
 
     @property
     def current_scope(self):
@@ -157,3 +161,77 @@ class Interpreter:
         # In a real interpreter, you might want to stop execution of the current function here
         # For simplicity, we'll just set the return_value and let the function continue if there's more code
         # A more robust solution would involve raising a special exception to unwind the stack.
+
+    def visit_AlbumDefinition(self, node):
+        self.albums[node.name] = node
+
+    def visit_RecordInstantiation(self, node):
+        if node.album_name not in self.albums:
+            raise Exception(f"Undefined Album: {node.album_name}")
+
+        album_node = self.albums[node.album_name]
+        record_instance = {"__type__": "Record", "__album_name__": node.album_name}
+        
+        self.push_scope() # New scope for record properties
+        self.current_scope["this"] = record_instance # 'this' refers to the current record instance
+
+        # Process album body to define properties and methods
+        self.visit(album_node.body)
+
+        # Assign arguments to record properties
+        for param_name, param_value_node in node.args.items():
+            record_instance[param_name] = self.visit(param_value_node)
+
+        self.pop_scope()
+        return record_instance
+
+    def visit_MemberAccess(self, node):
+        obj = self.visit(node.obj)
+        member = node.member
+
+        if isinstance(obj, dict) and obj.get("__type__") == "Record":
+            if member in obj:
+                return obj[member]
+            elif member in self.functions: # Check for methods defined globally
+                # For now, methods are just global functions. In a more complex system,
+                # methods would be defined within the AlbumDefinition.
+                return self.functions[member]
+            else:
+                raise Exception(f"Undefined member '{member}' for Record of Album '{obj.get("__album_name__")}'")
+        elif isinstance(obj, dict) and obj.get("__type__") == "LinerNotes":
+            if member in obj:
+                return obj[member]
+            else:
+                raise Exception(f"Undefined key '{member}' in Liner Notes.")
+        else:
+            raise Exception(f"Cannot access members of type {type(obj).__name__}")
+
+    def visit_TryCatchFinally(self, node):
+        try:
+            self.visit(node.try_body)
+        except Exception as e:
+            if node.catch_body:
+                self.push_scope()
+                self.current_scope["error"] = str(e) # Make error message available in catch block
+                self.visit(node.catch_body)
+                self.pop_scope()
+            else:
+                raise e # Re-raise if no catch block
+        finally:
+            if node.finally_body:
+                self.visit(node.finally_body)
+
+    def visit_LinerNotesLiteral(self, node):
+        liner_notes = {"__type__": "LinerNotes"}
+        for key, value_node in node.pairs.items():
+            liner_notes[key] = self.visit(value_node)
+        return liner_notes
+
+    def visit_LinerNotesAccess(self, node):
+        liner_notes = self.visit(node.liner_notes)
+        key = self.visit(node.key)
+        if not isinstance(liner_notes, dict) or liner_notes.get("__type__") != "LinerNotes":
+            raise Exception(f"Type error: {liner_notes} is not Liner Notes.")
+        if key not in liner_notes:
+            raise Exception(f"Key '{key}' not found in Liner Notes.")
+        return liner_notes[key]
