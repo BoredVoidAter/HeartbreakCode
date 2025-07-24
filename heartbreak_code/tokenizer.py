@@ -65,6 +65,23 @@ class Tokenizer:
             ("FOR_VERSE", r"for verse"),
             ("ON_PORT", r"on port"),
 
+            # The Choreography: Build Automation and Task Runner
+            ("DEFINE_CHOREOGRAPHY", r"Define Choreography"),
+            ("RUN_CHOREOGRAPHY", r"Run Choreography"),
+            ("RUN_HEARTBREAK_CODE_CHOREOGRAPHY", r"Run HeartbreakCode Choreography"),
+
+            # Mastermind Structural Pattern Matching
+            ("MATCH", r"Match"),
+            ("CASE", r"Case"),
+            ("AS", r"as"),
+            ("DEFAULT", r"Default"),
+            ("END_CASE", r"End Case"),
+            ("END_MATCH", r"End Match"),
+
+            # Safe & Sound Runtime Security Sandbox
+            ("GRANT_PERMISSION", r"Grant Permission"),
+            ("REVOKE_PERMISSION", r"Revoke Permission"),
+
             # Concurrency keywords
             ("BACKUP_DANCER", r"Backup Dancer"),
             ("PERFORM_IN_PARALLEL", r"Perform in Parallel"),
@@ -144,6 +161,7 @@ class Tokenizer:
             ("NUMBER", r"\d+"),
 
             # Catch-all for identifiers (must be last)
+            ("WILDCARD", r"_"),
             ("IDENTIFIER", r"[a-zA-Z_][a-zA-Z0-9_]*"),
             ("UNKNOWN", r"."),
         ]

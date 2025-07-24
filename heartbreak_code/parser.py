@@ -330,11 +330,56 @@ class TypeOf(ASTNode):
     def __init__(self, expression):
         self.expression = expression
 
+class MatchStatement(ASTNode):
+    def __init__(self, expression, cases, default_case=None):
+        self.expression = expression
+        self.cases = cases
+        self.default_case = default_case
+
+class CaseBlock(ASTNode):
+    def __init__(self, pattern, body, alias=None):
+        self.pattern = pattern
+        self.body = body
+        self.alias = alias
+
+class DefaultCase(ASTNode):
+    def __init__(self, body):
+        self.body = body
+
 class Assertion(ASTNode):
     def __init__(self, expression, assertion_type, expected_value=None):
         self.expression = expression
         self.assertion_type = assertion_type
         self.expected_value = expected_value
+
+class GrantPermission(ASTNode):
+    def __init__(self, permission_type):
+        self.permission_type = permission_type
+
+class RevokePermission(ASTNode):
+    def __init__(self, permission_type):
+        self.permission_type = permission_type
+
+class GrantPermission(ASTNode):
+    def __init__(self, permission_type):
+        self.permission_type = permission_type
+
+class RevokePermission(ASTNode):
+    def __init__(self, permission_type):
+        self.permission_type = permission_type
+
+class DefineChoreography(ASTNode):
+    def __init__(self, name, command):
+        self.name = name
+        self.command = command
+
+class RunChoreography(ASTNode):
+    def __init__(self, name):
+        self.name = name
+
+class RunHeartbreakCodeChoreography(ASTNode):
+    def __init__(self, verse_name):
+        self.verse_name = verse_name
 
 class Parser:
     def __init__(self, tokens):
@@ -879,8 +924,52 @@ class Parser:
             return self.lsp_go_to_definition_statement()
         elif self.current_token.type == "LSP_HOVER":
             return self.lsp_hover_statement()
+        elif self.current_token.type == "MATCH":
+            return self.match_statement()
+        elif self.current_token.type == "DEFINE_CHOREOGRAPHY":
+            return self.define_choreography_statement()
+        elif self.current_token.type == "RUN_CHOREOGRAPHY":
+            return self.run_choreography_statement()
+        elif self.current_token.type == "RUN_HEARTBREAK_CODE_CHOREOGRAPHY":
+            return self.run_heartbreak_code_choreography_statement()
+        elif self.current_token.type == "GRANT_PERMISSION":
+            return self.grant_permission_statement()
+        elif self.current_token.type == "REVOKE_PERMISSION":
+            return self.revoke_permission_statement()
         else:
             raise Exception(f"Unknown statement type: {self.current_token.type}")
+
+    def match_statement(self):
+        self.eat("MATCH")
+        expression = self.expression()
+        self.eat("SPEAK_NOW")
+        cases = []
+        default_case = None
+        while self.current_token and self.current_token.type in ("CASE", "DEFAULT"):
+            if self.current_token.type == "CASE":
+                self.eat("CASE")
+                pattern = self.expression()
+                alias = None
+                if self.current_token and self.current_token.type == "AS":
+                    self.eat("AS")
+                    alias = self.current_token.value
+                    self.eat("IDENTIFIER")
+                self.eat("SPEAK_NOW")
+                body = []
+                while self.current_token and self.current_token.type != "END_CASE":
+                    body.append(self.parse_statement())
+                self.eat("END_CASE")
+                cases.append(CaseBlock(pattern, Program(body), alias))
+            elif self.current_token.type == "DEFAULT":
+                self.eat("DEFAULT")
+                self.eat("SPEAK_NOW")
+                body = []
+                while self.current_token and self.current_token.type != "END_CASE":
+                    body.append(self.parse_statement())
+                self.eat("END_CASE")
+                default_case = DefaultCase(Program(body))
+        self.eat("END_MATCH")
+        return MatchStatement(expression, cases, default_case)
 
     def if_statement(self):
         self.eat("WOULD_HAVE")
@@ -1123,4 +1212,36 @@ class Parser:
         self.eat("TYPE_OF")
         expression = self.expression()
         return TypeOf(expression)
+
+    def define_choreography_statement(self):
+        self.eat("DEFINE_CHOREOGRAPHY")
+        name = self.current_token.value.strip("'").strip('"')
+        self.eat("STRING_SINGLE")
+        self.eat("FEATURING")
+        self.eat("IDENTIFIER") # command=
+        self.eat("EQUALS")
+        command = self.expression()
+        return DefineChoreography(name, command)
+
+    def run_choreography_statement(self):
+        self.eat("RUN_CHOREOGRAPHY")
+        name = self.current_token.value.strip("'").strip('"')
+        self.eat("STRING_SINGLE")
+        return RunChoreography(name)
+
+    def run_heartbreak_code_choreography_statement(self):
+        self.eat("RUN_HEARTBREAK_CODE_CHOREOGRAPHY")
+        verse_name = self.current_token.value.strip("'").strip('"')
+        self.eat("STRING_SINGLE")
+        return RunHeartbreakCodeChoreography(verse_name)
+
+    def grant_permission_statement(self):
+        self.eat("GRANT_PERMISSION")
+        permission_type = self.expression()
+        return GrantPermission(permission_type)
+
+    def revoke_permission_statement(self):
+        self.eat("REVOKE_PERMISSION")
+        permission_type = self.expression()
+        return RevokePermission(permission_type)
 

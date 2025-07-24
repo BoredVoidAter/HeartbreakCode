@@ -43,6 +43,9 @@ This project is more than just a concept; it's a significant technical undertaki
 
 ## ✨ Features
 
+*   **'Mastermind' Structural Pattern Matching**: Elegantly deconstruct data structures like 'Tracklists' and 'Liner Notes' by matching against their shape and values, binding variables and controlling program flow.
+*   **'Safe & Sound' Runtime Security Sandbox**: A permissions-based security model for the HeartbreakCode runtime, allowing granular control over sensitive operations like file system I/O ('The Vault'), network requests ('Message in a Bottle'), and native library calls ('The Crossover').
+*   **'The Choreography' Build Automation and Task Runner**: A command-line tool and project configuration for defining and running common development tasks, standardizing and automating the entire project lifecycle.
 *   **'Déjà Vu': A Lyrical Machine Learning Framework**: A high-level, built-in framework for machine learning tasks, providing an expressive, lyrical API for training simple models and making predictions. Leverages existing 'Crossover' FFI to bind to high-performance, underlying ML libraries.
 *   **'Dear Reader': Interactive Notebook Kernel**: Allows HeartbreakCode to run within popular interactive notebook environments (e.g., Jupyter, VS Code). Enables cell-by-cell execution, interleaving with Markdown, and rich output visualization of 'Tracklists' and 'Liner Notes'.
 *   **'On The World Stage': A WebAssembly Compilation Target**: Enhances the 'Going Platinum' Ahead-Of-Time (AOT) compiler to support WebAssembly (WASM) as a compilation target, enabling compilation of HeartbreakCode projects into platform-agnostic, high-performance bytecode for web browsers and other WASM runtimes.

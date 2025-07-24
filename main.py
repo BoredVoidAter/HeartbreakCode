@@ -210,6 +210,57 @@ Speak Now: 'Web server started on http://localhost:8000. Press Ctrl+C to stop.'
 # curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"value\"}" http://localhost:8000/json
 # Perform 'Stop The Setlist' # Uncomment to stop the server programmatically
 
+    # 'Mastermind' Structural Pattern Matching
+    Speak Now: '
+--- Mastermind: Structural Pattern Matching ---'
+    The story of us is song_info Liner Notes are { title: 'Love Story', artist: 'Taylor Swift', year: 2008 }
+    Match song_info Speak Now:
+        Case Liner Notes are { title: 'Love Story', artist: 'Taylor Swift' } Speak Now:
+            Speak Now: 'Matched Love Story by Taylor Swift!'
+        End Case
+        Case Liner Notes are { artist: 'Olivia Rodrigo', year: _ } as olivia_song Speak Now:
+            Speak Now: 'Matched an Olivia Rodrigo song from year: '
+            Speak Now: olivia_song.year
+        End Case
+        Default Speak Now:
+            Speak Now: 'No match found.'
+        End Case
+    End Match
+
+    The story of us is tracklist_data ['Lover', 'Fearless', 'evermore']
+    Match tracklist_data Speak Now:
+        Case ['Lover', _, 'evermore'] Speak Now:
+            Speak Now: 'Matched a specific tracklist pattern!'
+        End Case
+        Default Speak Now:
+            Speak Now: 'Tracklist pattern not matched.'
+        End Case
+    End Match
+
+    # 'Safe & Sound' Runtime Security Sandbox
+    Speak Now: '
+--- Safe & Sound: Runtime Security Sandbox ---'
+    Perform 'Grant Permission' Featuring permission_type='file_system_read'
+    The story of us is file_exists_with_permission Does The Vault Contain 'my_secret_diary.txt'
+    Speak Now: 'Does my_secret_diary.txt exist with permission?'
+    Speak Now: file_exists_with_permission
+    Perform 'Revoke Permission' Featuring permission_type='file_system_read'
+    # This will now throw an error if uncommented:
+    # The story of us is file_exists_without_permission Does The Vault Contain 'my_secret_diary.txt'
+    # Speak Now: 'Does my_secret_diary.txt exist without permission?'
+    # Speak Now: file_exists_without_permission
+
+    # 'The Choreography' Build Automation and Task Runner
+    Speak Now: '
+--- The Choreography: Build Automation and Task Runner ---'
+    Perform 'Define Choreography' Featuring name='build_project', command='echo Building project...'
+    Perform 'Run Choreography' Featuring name='build_project'
+
+    Define Verse 'MyBuildVerse': Speak Now:
+        Speak Now: 'Running HeartbreakCode build verse!'
+    End Verse
+    Perform 'Run HeartbreakCode Choreography' Featuring verse_name='MyBuildVerse'
+
     # --- New Features for Version 13 ---
 
     # 'Déjà Vu': A Lyrical Machine Learning Framework
