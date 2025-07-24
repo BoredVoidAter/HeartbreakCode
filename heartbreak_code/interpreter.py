@@ -21,6 +21,9 @@ from heartbreak_code.chart_topper import ChartTopper
 from heartbreak_code.passing_notes import PassingNotes
 from heartbreak_code.music_video import MusicVideo
 from heartbreak_code.final_draft import FinalDraft
+from heartbreak_code.eras import ErasSystem
+from heartbreak_code.unplugged_session import UnpluggedSession
+from heartbreak_code.narrative_arc import NarrativeArc
 
 class Interpreter:
     def __init__(self):
