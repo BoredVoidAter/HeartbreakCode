@@ -2,6 +2,9 @@
 from heartbreak_code.tokenizer import Tokenizer
 from heartbreak_code.parser import Parser
 from heartbreak_code.interpreter import Interpreter
+from heartbreak_code.deja_vu import train_model_on_tracklist, predict_future_lyrics, analyze_sentiment_of_liner_notes
+from heartbreak_code.dear_reader import execute_heartbreak_code_cell, display_tracklist_as_rich_output, display_liner_notes_as_markdown
+from heartbreak_code.wasm_target import compile_to_wasm, run_wasm_module
 
 def run_heartbreak_code(source_code):
     tokenizer = Tokenizer(source_code)
@@ -207,5 +210,58 @@ Speak Now: 'Web server started on http://localhost:8000. Press Ctrl+C to stop.'
 # curl -X POST -H "Content-Type: application/json" -d "{\"key\":\"value\"}" http://localhost:8000/json
 # Perform 'Stop The Setlist' # Uncomment to stop the server programmatically
 
+    # --- New Features for Version 13 ---
+
+    # 'Déjà Vu': A Lyrical Machine Learning Framework
+    Speak Now: '\n--- Déjà Vu: Lyrical Machine Learning ---'
+    The story of us is tracklist_data Liner Notes are { song1: 'lyrics about love', song2: 'lyrics about breakup' }
+    The story of us is lyrical_labels ['positive', 'negative']
+    The story of us is trained_model Perform 'train_model_on_tracklist' Featuring tracklist_data=tracklist_data, lyrical_labels=lyrical_labels
+    Speak Now: 'Trained Model: '
+    Speak Now: trained_model
+
+    The story of us is new_track Liner Notes are { song3: 'lyrics about moving on' }
+    The story of us is predictions Perform 'predict_future_lyrics' Featuring trained_model=trained_model, new_track_data=new_track
+    Speak Now: 'Predictions for new track: '
+    Speak Now: predictions
+
+    The story of us is liner_notes_sentiment Perform 'analyze_sentiment_of_liner_notes' Featuring liner_notes_text='This album is full of sad songs about a breakup.'
+    Speak Now: 'Sentiment of liner notes: '
+    Speak Now: liner_notes_sentiment
+
+    # 'Dear Reader': Interactive Notebook Kernel
+    Speak Now: '\n--- Dear Reader: Interactive Notebook Kernel ---'
+    The story of us is cell_code 'Speak Now: \'Hello from a notebook cell!\''
+    The story of us is cell_output Perform 'execute_heartbreak_code_cell' Featuring code_cell_content=cell_code
+    Speak Now: 'Notebook Cell Output: '
+    Speak Now: cell_output
+
+    The story of us is sample_tracklist Liner Notes are { Track1: 'Verse 1', Track2: 'Chorus' }
+    The story of us is rich_tracklist_output Perform 'display_tracklist_as_rich_output' Featuring tracklist_data=sample_tracklist
+    Speak Now: 'Rich Tracklist Output (HTML): '
+    Speak Now: rich_tracklist_output
+
+    The story of us is sample_liner_notes '# Album Notes\n\nThis album explores themes of resilience and growth.'
+    The story of us is markdown_liner_notes Perform 'display_liner_notes_as_markdown' Featuring liner_notes_content=sample_liner_notes
+    Speak Now: 'Markdown Liner Notes: '
+    Speak Now: markdown_liner_notes
+
+    # 'On The World Stage': A WebAssembly Compilation Target
+    Speak Now: '\n--- On The World Stage: WebAssembly Compilation ---'
+    The story of us is sample_hbc_code 'Speak Now: \'Hello WASM!\''
+    The story of us is wasm_output_path './output.wasm'
+    The story of us is compile_result Perform 'compile_to_wasm' Featuring heartbreak_code_source=sample_hbc_code, output_path=wasm_output_path
+    Speak Now: 'WASM Compilation Result: '
+    Speak Now: compile_result
+
+    Would've compile_result.status is 'success' Speak Now:
+        The story of us is run_result Perform 'run_wasm_module' Featuring wasm_file_path=wasm_output_path
+        Speak Now: 'WASM Run Result: '
+        Speak Now: run_result
+    End Verse
+
+
+
 """
-    run_heartbreak_code(code)
+
+
