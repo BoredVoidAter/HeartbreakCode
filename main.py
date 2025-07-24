@@ -5,6 +5,10 @@ from heartbreak_code.interpreter import Interpreter
 from heartbreak_code.deja_vu import train_model_on_tracklist, predict_future_lyrics, analyze_sentiment_of_liner_notes
 from heartbreak_code.dear_reader import execute_heartbreak_code_cell, display_tracklist_as_rich_output, display_liner_notes_as_markdown
 from heartbreak_code.wasm_target import compile_to_wasm, run_wasm_module
+from heartbreak_code.chart_topper import ChartTopper
+from heartbreak_code.passing_notes import PassingNotes
+from heartbreak_code.music_video import MusicVideo
+from heartbreak_code.final_draft import FinalDraft
 
 def run_heartbreak_code(source_code):
     tokenizer = Tokenizer(source_code)
@@ -311,7 +315,53 @@ Speak Now: 'Web server started on http://localhost:8000. Press Ctrl+C to stop.'
         Speak Now: run_result
     End Verse
 
+    # --- New Features for Version 15 ---
 
+    # 'The Chart Topper': A Lyrical Data Visualization Library
+    Speak Now: '
+--- The Chart Topper: Data Visualization ---'
+    The story of us is chart_data Liner Notes are { Pop: 100, Rock: 75, Indie: 50 }
+    Perform 'Visualize Chart' Featuring type='bar_chart', data=chart_data, title='Genre Popularity', output_file='genre_popularity.png'
+
+    # 'Passing Notes': A Distributed Message Queue System
+    Speak Now: '
+--- Passing Notes: Message Queue ---'
+    Perform 'Pass Note' Featuring channel='updates', message='New album released!'
+    The story of us is received_note Perform 'Listen For Note' Featuring channel='updates'
+    Speak Now: 'Received Note: '
+    Speak Now: received_note
+
+    # 'The Music Video': A 2D Game and Animation Engine
+    Speak Now: '
+--- The Music Video: 2D Engine ---'
+    Perform 'Start Music Video Engine'
+    The story of us is player_sprite Perform 'Add Sprite' Featuring name='Player', position=Liner Notes are { x: 10, y: 20 }
+    Perform 'Animate Sprite' Featuring sprite=player_sprite, frames=['walk1.png', 'walk2.png'], duration=0.5
+    Perform 'Handle Event' Featuring event_type='keyboard', handler_verse='MyKeyboardHandler'
+    Perform 'Start Game Loop'
+
+    Define Verse 'MyKeyboardHandler' Featuring event_type, key: Speak Now:
+        Speak Now: 'Keyboard event received: '
+        Speak Now: event_type
+        Speak Now: ' Key: '
+        Speak Now: key
+    End Verse
+
+    # 'The Final Draft': A Static Analysis and Linting Tool
+    Speak Now: '
+--- The Final Draft: Linting Tool ---'
+    The story of us is code_to_lint 'Would've my_variable is 1989 Speak Now:
+    Speak Now: 'It was a good year!'
+End Verse
+Perform 'MyChorus'
+Perform 'MyChorus'
+Perform 'MyChorus'
+Perform 'MyChorus'
+Perform 'MyChorus'
+Perform 'MyChorus''
+    The story of us is linting_report Perform 'Analyze Code' Featuring code=code_to_lint
+    Speak Now: 'Linting Report: '
+    Speak Now: linting_report
 
 """
 

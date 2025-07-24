@@ -17,6 +17,10 @@ from heartbreak_code.the_setlist import Setlist
 from heartbreak_code.backup_dancer import BackupDancerManager
 from heartbreak_code.security_sandbox import SecuritySandbox
 from heartbreak_code.choreography import Choreography
+from heartbreak_code.chart_topper import ChartTopper
+from heartbreak_code.passing_notes import PassingNotes
+from heartbreak_code.music_video import MusicVideo
+from heartbreak_code.final_draft import FinalDraft
 
 class Interpreter:
     def __init__(self):
@@ -29,6 +33,10 @@ class Interpreter:
         self.backup_dancer_manager = BackupDancerManager(self)
         self.security_sandbox = SecuritySandbox()
         self.choreography = Choreography(self)
+        self.chart_topper = ChartTopper()
+        self.passing_notes = PassingNotes()
+        self.music_video = MusicVideo()
+        self.final_draft = FinalDraft()
         self.current_request = None # For The Setlist
         self.current_response = None # For The Setlist
 
@@ -60,6 +68,73 @@ class Interpreter:
     def visit_RunHeartbreakCodeChoreography(self, node):
         result = self.choreography.run_heartbreak_code_task(self.visit(node.verse_name))
         print(f"HeartbreakCode Choreography task result: {result}")
+
+    def visit_RunHeartbreakCodeChoreography(self, node):
+        result = self.choreography.run_heartbreak_code_task(self.visit(node.verse_name))
+        print(f"HeartbreakCode Choreography task result: {result}")
+
+    def visit_VisualizeChart(self, node):
+        vis_type = self.visit(node.visualization_type)
+        data = self.visit(node.data)
+        kwargs = {self.visit(k): self.visit(v) for k, v in node.kwargs.items()}
+        self.chart_topper.visualize(vis_type, data, **kwargs)
+
+    def visit_PassNote(self, node):
+        channel = self.visit(node.channel)
+        message = self.visit(node.message)
+        self.passing_notes.pass_note(channel, message)
+
+    def visit_ListenForNote(self, node):
+        channel = self.visit(node.channel)
+        return self.passing_notes.listen_for_note(channel)
+
+    def visit_StartMusicVideoEngine(self, node):
+        self.music_video = MusicVideo() # Re-initialize for a fresh start
+        print("Music Video engine started.")
+
+    def visit_AddSprite(self, node):
+        sprite_name = self.visit(node.sprite_name)
+        initial_position = self.visit(node.initial_position) if node.initial_position else (0, 0)
+        return self.music_video.add_sprite(sprite_name, initial_position)
+
+    def visit_AnimateSprite(self, node):
+        sprite = self.visit(node.sprite)
+        animation_frames = self.visit(node.animation_frames)
+        duration = self.visit(node.duration)
+        self.music_video.animate_sprite(sprite, animation_frames, duration)
+
+    def visit_HandleEvent(self, node):
+        event_type = self.visit(node.event_type)
+        handler_verse = self.visit(node.handler_verse)
+        # Need to wrap the handler_verse in a callable that the music_video engine can use
+        def event_handler_wrapper(*args, **kwargs):
+            # This is a simplified approach. In a real scenario, you'd need to map
+            # the event arguments from the engine to the HeartbreakCode verse parameters.
+            print(f"HeartbreakCode event handler for {event_type} triggered.")
+            # For now, we'll just call the verse without passing specific args
+            # A more robust solution would involve passing args to the verse
+            # self.execute_verse_by_name(handler_verse)
+            # For now, let's just print the args received from the engine
+            print(f"  Engine args: {args}, kwargs: {kwargs}")
+            # If the verse expects specific parameters, you'd need to extract them from args/kwargs
+            # and set them in a new scope before executing the verse.
+            # For the example in main.py, the verse expects 'event_type' and 'key'.
+            # We'll simulate passing these by setting them in a temporary scope.
+            self.push_scope()
+            self.current_scope['event_type'] = args[0] if args else None
+            self.current_scope['key'] = args[1] if len(args) > 1 else None
+            self.execute_verse_by_name(handler_verse)
+            self.pop_scope()
+
+        self.music_video.handle_event(event_type, event_handler_wrapper)
+
+    def visit_StartGameLoop(self, node):
+        self.music_video.start_game_loop()
+
+    def visit_AnalyzeCode(self, node):
+        code_content = self.visit(node.code)
+        issues = self.final_draft.analyze_code(code_content)
+        return self.final_draft.generate_report()
 
     @property
     def current_scope(self):
